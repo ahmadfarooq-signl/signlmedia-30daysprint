@@ -633,17 +633,19 @@ function toggleTask(dayIdx, taskIdx) {
   const key = `${dayIdx}-${taskIdx}`;
   state[key] = !state[key];
   saveState();
-  renderAll();
+  const el = document.getElementById(`task-${dayIdx}-${taskIdx}`);
+  if (el) el.classList.toggle('done', state[key]);
+  updateStats();
 }
 
-function addProspect() {
-  const name = document.getElementById('p-name').value.trim();
-  const company = document.getElementById('p-company').value.trim();
-  const status = document.getElementById('p-status').value;
+function addProspect(di) {
+  const name = document.getElementById(`p-name-${di}`).value.trim();
+  const company = document.getElementById(`p-company-${di}`).value.trim();
+  const status = document.getElementById(`p-status-${di}`).value;
   if (!name) return;
   prospects.push({ id: Date.now(), name, company, status });
-  document.getElementById('p-name').value = '';
-  document.getElementById('p-company').value = '';
+  document.getElementById(`p-name-${di}`).value = '';
+  document.getElementById(`p-company-${di}`).value = '';
   saveProspects();
   renderProspects();
   updateStats();
@@ -665,12 +667,10 @@ const STATUS_LABELS = { connected: 'Connected', replied: 'Replied', call: 'Call 
 const STATUS_CLASSES = { connected: 'ps-connected', replied: 'ps-replied', call: 'ps-call', proposal: 'ps-proposal', closed: 'ps-closed' };
 
 function renderProspects() {
-  const list = document.getElementById('prospect-list');
-  if (!list) return;
-  if (prospects.length === 0) {
-    list.innerHTML = '<div class="prospect-empty">No prospects yet. Add your first one above.</div>';
-  } else {
-    list.innerHTML = prospects.map(p => `
+  const prospectDays = [1, 3, 7, 11, 15, 21];
+  const content = prospects.length === 0
+    ? '<div class="prospect-empty">No prospects yet. Add your first one above.</div>'
+    : prospects.map(p => `
       <div class="prospect-row">
         <div class="prospect-name">${p.name}</div>
         <div class="prospect-company">${p.company || ''}</div>
@@ -680,8 +680,12 @@ function renderProspects() {
         <button class="prospect-del" onclick="deleteProspect(${p.id})">Remove</button>
       </div>
     `).join('');
-  }
-  document.getElementById('prospect-count').textContent = prospects.length + ' prospects';
+  prospectDays.forEach(di => {
+    const list = document.getElementById(`prospect-list-${di}`);
+    const count = document.getElementById(`prospect-count-${di}`);
+    if (list) list.innerHTML = content;
+    if (count) count.textContent = prospects.length + ' prospects';
+  });
 }
 
 function updateStats() {
@@ -755,7 +759,7 @@ function buildContent() {
 
     d.tasks.forEach((t, ti) => {
       const done = state[`${di}-${ti}`] ? ' done' : '';
-      html += `<div class="task${done}" onclick="toggleTask(${di},${ti})">
+      html += `<div class="task${done}" id="task-${di}-${ti}" onclick="toggleTask(${di},${ti})">
         <div class="task-cb"></div>
         <div class="task-body">
           <div class="task-tag ${TAG_CLASSES[t.tag]}">${TAGS[t.tag]}</div>
@@ -785,21 +789,21 @@ function buildContent() {
       html += `<div class="prospect-section">
         <div class="prospect-header">
           <span class="prospect-title">Prospect tracker</span>
-          <span class="prospect-count" id="prospect-count">0 prospects</span>
+          <span class="prospect-count" id="prospect-count-${di}">0 prospects</span>
         </div>
         <div class="prospect-add">
-          <input class="prospect-input" id="p-name" placeholder="Name" style="max-width:160px">
-          <input class="prospect-input" id="p-company" placeholder="Agency" style="max-width:160px">
-          <select class="prospect-select" id="p-status">
+          <input class="prospect-input" id="p-name-${di}" placeholder="Name" style="max-width:160px">
+          <input class="prospect-input" id="p-company-${di}" placeholder="Agency" style="max-width:160px">
+          <select class="prospect-select" id="p-status-${di}">
             <option value="connected">Connected</option>
             <option value="replied">Replied</option>
             <option value="call">Call booked</option>
             <option value="proposal">Proposal sent</option>
             <option value="closed">Closed</option>
           </select>
-          <button class="prospect-btn" onclick="addProspect()">Add</button>
+          <button class="prospect-btn" onclick="addProspect(${di})">Add</button>
         </div>
-        <div class="prospect-list" id="prospect-list"></div>
+        <div class="prospect-list" id="prospect-list-${di}"></div>
       </div>`;
     }
 
