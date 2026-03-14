@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNL Media — 30 Day Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --black: #0a0a0a;
+  --white: #f8f6f2;
+  --gray-1: #1a1a1a;
+  --gray-2: #2a2a2a;
+  --gray-3: #444;
+  --gray-4: #888;
+  --gray-5: #bbb;
+  --gray-6: #e8e6e2;
+  --serif: 'DM Serif Display', serif;
+  --sans: 'Outfit', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--white); color: var(--black); font-family: var(--sans); }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-6);
+  padding: 0 40px;
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-text { font-family: var(--sans); font-size: 13px; font-weight: 700; letter-spacing: 3px; color: var(--black); }
+.logo-sub { font-size: 7px; letter-spacing: 5px; color: var(--gray-4); display: block; margin-top: 1px; }
+.nav-progress { font-size: 12px; font-weight: 500; color: var(--gray-4); letter-spacing: 1px; }
+.nav-progress span { color: var(--black); font-weight: 600; }
+
+/* HEADER */
+.header {
+  padding: 100px 40px 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 40px;
+  border-bottom: 1px solid var(--gray-6);
+}
+.header-label { font-size: 11px; font-weight: 500; letter-spacing: 4px; color: var(--gray-4); margin-bottom: 12px; text-transform: uppercase; }
+.header-title { font-family: var(--serif); font-size: clamp(36px, 5vw, 60px); line-height: 1.1; color: var(--black); }
+.header-title em { font-style: italic; color: var(--gray-3); }
+.header-stats { display: flex; gap: 32px; }
+.hstat { text-align: right; }
+.hstat-num { font-family: var(--serif); font-size: 36px; color: var(--black); line-height: 1; }
+.hstat-label { font-size: 10px; letter-spacing: 2px; color: var(--gray-4); margin-top: 2px; text-transform: uppercase; }
+
+/* MAIN LAYOUT */
+.main { max-width: 1100px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 260px 1fr; gap: 0; }
+
+/* SIDEBAR */
+.sidebar { border-right: 1px solid var(--gray-6); padding: 40px 0; position: sticky; top: 60px; height: calc(100vh - 60px); overflow-y: auto; }
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--gray-6); }
+.sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: 3px; color: var(--gray-4); padding: 0 24px; margin-bottom: 12px; text-transform: uppercase; }
+.day-link {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 24px; cursor: pointer; transition: background 0.15s;
+  font-size: 13px; color: var(--gray-3); font-weight: 400;
+  border-left: 2px solid transparent;
+}
+.day-link:hover { background: var(--gray-6); }
+.day-link.active { border-left-color: var(--black); color: var(--black); font-weight: 600; background: rgba(0,0,0,0.03); }
+.day-link.complete { color: var(--gray-4); }
+.day-link.complete .day-check { opacity: 1; }
+.day-check { width: 14px; height: 14px; border: 1px solid var(--gray-5); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: all 0.2s; flex-shrink: 0; }
+.day-check.done { background: var(--black); border-color: var(--black); opacity: 1; }
+.day-check.done::after { content: ''; width: 6px; height: 6px; background: var(--white); border-radius: 50%; display: block; }
+.sidebar-section-gap { height: 8px; }
+.sidebar-week-label { font-size: 9px; font-weight: 600; letter-spacing: 3px; color: var(--gray-5); padding: 12px 24px 4px; text-transform: uppercase; }
+
+/* CONTENT */
+.content { padding: 40px 0 40px 48px; }
+.day-section { margin-bottom: 64px; scroll-margin-top: 80px; }
+.day-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 4px; }
+.day-num { font-size: 10px; font-weight: 600; letter-spacing: 4px; color: var(--gray-4); text-transform: uppercase; }
+.day-title { font-family: var(--serif); font-size: 26px; color: var(--black); line-height: 1.2; }
+.day-goal { font-size: 13px; color: var(--gray-4); margin-bottom: 24px; font-style: italic; border-left: 2px solid var(--gray-6); padding-left: 12px; margin-top: 8px; }
+.tasks { display: flex; flex-direction: column; gap: 1px; }
+.task {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--gray-6);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  background: var(--white);
+  user-select: none;
+}
+.task:hover { border-color: var(--gray-5); background: #fafaf8; }
+.task.done { background: #f5f5f3; }
+.task.done .task-text { color: var(--gray-4); text-decoration: line-through; }
+.task.done .task-note { color: var(--gray-5); }
+.task-cb {
+  width: 18px; height: 18px; border: 1.5px solid var(--gray-5);
+  border-radius: 3px; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.task.done .task-cb { background: var(--black); border-color: var(--black); }
+.task.done .task-cb::after { content: ''; width: 9px; height: 6px; border-left: 1.5px solid var(--white); border-bottom: 1.5px solid var(--white); transform: rotate(-45deg) translateY(-1px); display: block; }
+.task-body { flex: 1; }
+.task-text { font-size: 14px; font-weight: 400; color: var(--black); line-height: 1.5; }
+.task-note { font-size: 12px; color: var(--gray-4); margin-top: 3px; line-height: 1.4; }
+.task-tag { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 2px; padding: 2px 8px; border-radius: 20px; margin-bottom: 4px; text-transform: uppercase; }
+.tag-daily { background: #f0f0ee; color: var(--gray-3); }
+.tag-outreach { background: #0a0a0a; color: var(--white); }
+.tag-content { background: #e8e4dc; color: var(--gray-2); }
+.tag-setup { background: #f8f4ec; color: #7a6a4a; border: 1px solid #e8d8b8; }
+.tag-close { background: var(--black); color: var(--white); }
+
+/* PROSPECT LIST */
+.prospect-section { margin-top: 32px; border: 1px solid var(--gray-6); }
+.prospect-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--gray-6); background: #fafaf8; }
+.prospect-title { font-size: 12px; font-weight: 600; letter-spacing: 2px; color: var(--black); text-transform: uppercase; }
+.prospect-count { font-size: 11px; color: var(--gray-4); }
+.prospect-add { display: flex; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--gray-6); }
+.prospect-input {
+  flex: 1; padding: 8px 12px; border: 1px solid var(--gray-6); font-family: var(--sans); font-size: 13px; color: var(--black); background: var(--white); outline: none; transition: border-color 0.15s;
+}
+.prospect-input:focus { border-color: var(--gray-3); }
+.prospect-input::placeholder { color: var(--gray-5); }
+.prospect-btn {
+  padding: 8px 16px; background: var(--black); color: var(--white); border: none; font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: background 0.15s;
+}
+.prospect-btn:hover { background: var(--gray-1); }
+.prospect-select {
+  padding: 8px 10px; border: 1px solid var(--gray-6); font-family: var(--sans); font-size: 12px; color: var(--black); background: var(--white); outline: none; cursor: pointer;
+}
+.prospect-list { max-height: 280px; overflow-y: auto; }
+.prospect-row {
+  display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+  border-bottom: 1px solid var(--gray-6); transition: background 0.15s;
+}
+.prospect-row:last-child { border-bottom: none; }
+.prospect-row:hover { background: #fafaf8; }
+.prospect-name { font-size: 13px; font-weight: 500; color: var(--black); flex: 1; }
+.prospect-company { font-size: 12px; color: var(--gray-4); width: 120px; }
+.prospect-status-badge {
+  font-size: 9px; font-weight: 600; letter-spacing: 1.5px; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; white-space: nowrap;
+}
+.ps-connected { background: #f0f0ee; color: var(--gray-3); }
+.ps-replied { background: #e8f4ec; color: #2a6a3a; }
+.ps-call { background: #fef4e4; color: #8a6010; }
+.ps-proposal { background: #e8ecf8; color: #2a3a8a; }
+.ps-closed { background: var(--black); color: var(--white); }
+.prospect-status-sel {
+  font-size: 11px; padding: 4px 8px; border: 1px solid var(--gray-6); font-family: var(--sans); background: var(--white); color: var(--black); cursor: pointer; outline: none;
+}
+.prospect-del { font-size: 11px; color: var(--gray-5); cursor: pointer; padding: 4px; transition: color 0.15s; border: none; background: none; font-family: var(--sans); }
+.prospect-del:hover { color: var(--black); }
+.prospect-empty { padding: 24px 16px; font-size: 13px; color: var(--gray-4); text-align: center; font-style: italic; }
+
+/* RECURRING BOX */
+.recurring-box { border: 1px solid var(--gray-6); margin-top: 32px; }
+.recurring-header { padding: 12px 16px; border-bottom: 1px solid var(--gray-6); background: #fafaf8; font-size: 11px; font-weight: 600; letter-spacing: 3px; color: var(--gray-3); text-transform: uppercase; }
+.recurring-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+.recurring-item { padding: 16px; border-right: 1px solid var(--gray-6); border-bottom: 1px solid var(--gray-6); }
+.recurring-item:nth-child(3n) { border-right: none; }
+.recurring-item:nth-last-child(-n+3) { border-bottom: none; }
+.recurring-num { font-family: var(--serif); font-size: 28px; color: var(--black); line-height: 1; }
+.recurring-label { font-size: 11px; color: var(--gray-4); margin-top: 2px; }
+
+/* PROGRESS BAR */
+.progress-wrap { padding: 0 40px; max-width: 1100px; margin: 0 auto; padding-top: 20px; }
+.progress-track { height: 2px; background: var(--gray-6); width: 100%; }
+.progress-fill { height: 100%; background: var(--black); transition: width 0.4s ease; }
+.progress-labels { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--gray-4); }
+
+/* MOBILE */
+@media (max-width: 768px) {
+  nav, .header, .progress-wrap { padding-left: 20px; padding-right: 20px; }
+  .header { grid-template-columns: 1fr; padding-top: 80px; }
+  .header-stats { justify-content: flex-start; }
+  .main { grid-template-columns: 1fr; padding: 0 20px 60px; }
+  .sidebar { display: none; }
+  .content { padding: 32px 0; }
+  .recurring-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <svg width="40" height="26" viewBox="0 0 40 26">
+      <line x1="2" y1="22" x2="26" y2="22" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="2" y1="15" x2="20" y2="15" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round" opacity="0.45"/>
+      <line x1="2" y1="8" x2="12" y2="8" stroke="#0a0a0a" stroke-width="2" stroke-linecap="round" opacity="0.2"/>
+      <circle cx="31" cy="22" r="3.2" fill="none" stroke="#0a0a0a" stroke-width="1.5"/>
+      <circle cx="31" cy="22" r="1.2" fill="#0a0a0a"/>
+    </svg>
+    <div>
+      <span class="logo-text">SIGNL</span>
+      <span class="logo-sub">MEDIA</span>
+    </div>
+  </div>
+  <div class="nav-progress">Tasks done: <span id="nav-done">0</span> / <span id="nav-total">0</span></div>
+</nav>
+
+<div class="header">
+  <div>
+    <div class="header-label">30-Day Client Acquisition Plan</div>
+    <h1 class="header-title">Close your first<br><em>two clients.</em></h1>
+  </div>
+  <div class="header-stats">
+    <div class="hstat">
+      <div class="hstat-num" id="h-done">0</div>
+      <div class="hstat-label">Tasks done</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num" id="h-prospects">0</div>
+      <div class="hstat-label">Prospects</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num" id="h-closed">0</div>
+      <div class="hstat-label">Clients closed</div>
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  <div class="progress-labels"><span>Day 1</span><span>Day 30</span></div>
+</div>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-label">Days</div>
+    <div class="sidebar-week-label">Week 1 — Foundation</div>
+    <div id="sidebar-links"></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="content"></div>
+
+</div>
+
+<script>
+const DAYS = [
+  {
+    day: 1,
+    title: "Profile and setup",
+    goal: "Get everything live before you talk to a single person.",
+    tasks: [
+      { tag: "setup", text: "Update LinkedIn headline with new copy", note: "Use: Founder @ SIGNL Media | Helping agency founders turn LinkedIn into consistent inbound | No ads. No cold outreach." },
+      { tag: "setup", text: "Update LinkedIn about section with new copy", note: "Copy the version we wrote. Takes 20 minutes max." },
+      { tag: "setup", text: "Add SIGNL Media as current role in experience", note: "Founder @ SIGNL Media, Self-employed, 2025 to Present." },
+      { tag: "setup", text: "Create SIGNL Media LinkedIn company page", note: "Logo, banner, one-line description. Keep it sharp." },
+      { tag: "setup", text: "Repackage Nick case study under SIGNL Media", note: "One clean PDF. Challenge, what you did, result. This is your proof document." },
+      { tag: "setup", text: "Set up Wise or Payoneer to receive payments", note: "You need a payment method before anyone says yes." },
+    ]
+  },
+  {
+    day: 2,
+    title: "Build your prospect list",
+    goal: "Get 10 real agency founder profiles saved before you post anything.",
+    tasks: [
+      { tag: "setup", text: "Search LinkedIn for agency founders using filters", note: "Search: founder + agency + marketing OR creative OR design. Filter by people. Save in the prospect tracker below." },
+      { tag: "setup", text: "Add 10 prospects to your list below", note: "Name, agency name, status: Connected. Focus on people with 500 to 5000 followers — active but not huge." },
+      { tag: "content", text: "Write your first post — your 237k impressions story", note: "Hook: I had 130 followers and hit 237,000 impressions. Here is how. This is your proof post. Write it today, post it tomorrow." },
+      { tag: "setup", text: "Screenshot your current LinkedIn analytics as baseline", note: "Followers, impressions, profile views. You need a before number." },
+    ]
+  },
+  {
+    day: 3,
+    title: "First post. First connections.",
+    goal: "Be visible before you reach out to anyone.",
+    tasks: [
+      { tag: "content", text: "Publish your 237k impressions story post", note: "Post between 8am and 10am for best reach. Add 3 to 5 relevant hashtags at the end." },
+      { tag: "daily", text: "Send 20 connection requests to prospects on your list", note: "Add a short personal note: I work with agency founders on LinkedIn growth, would love to connect." },
+      { tag: "daily", text: "Comment on 10 posts from agency founders", note: "Real comments only. Add a thought, share an example, ask a follow-up question. Not just great post." },
+      { tag: "daily", text: "Reply to every comment on your post within 2 hours", note: "Early replies boost reach. Every commenter is a warm lead." },
+    ]
+  },
+  {
+    day: 4,
+    title: "Content and outreach rhythm",
+    goal: "Build the daily habit that will carry you through 30 days.",
+    tasks: [
+      { tag: "content", text: "Write post 2 — the three reasons agency founders stay invisible", note: "Based on your about section. The profile, the content, and the missing next step. Use the framework you already have." },
+      { tag: "daily", text: "Send 20 connection requests", note: "Keep adding new names to your prospect list as you go." },
+      { tag: "daily", text: "Comment on 10 posts from agency founders", note: "Prioritise people on your prospect list. They need to see your face before you DM." },
+      { tag: "outreach", text: "Add 10 more prospects to your list", note: "You need 50 people minimum in your pipeline by day 7." },
+    ]
+  },
+  {
+    day: 5,
+    title: "Post, comment, connect",
+    goal: "Consistency is the whole game this week.",
+    tasks: [
+      { tag: "content", text: "Publish post 2", note: "Post in the morning. Stay online for the first hour to reply to comments." },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts from agency founders", note: "" },
+      { tag: "daily", text: "Reply to all comments on your posts", note: "" },
+      { tag: "content", text: "Write post 3 for tomorrow — a content breakdown or process post", note: "Show how you write a post or build a content calendar. Agency founders want to see the process." },
+    ]
+  },
+  {
+    day: 6,
+    title: "Weekend writing day",
+    goal: "Batch write next week's posts so you are never scrambling.",
+    tasks: [
+      { tag: "content", text: "Publish post 3", note: "" },
+      { tag: "content", text: "Write posts 4, 5, 6, and 7 in one sitting", note: "One educational, one opinion, one storytelling, one process. Schedule them or save as drafts." },
+      { tag: "daily", text: "Comment on 10 posts", note: "Even on weekends. LinkedIn rewards consistency." },
+      { tag: "outreach", text: "Add 10 more prospects to your list", note: "Target total: 40 by end of day 6." },
+    ]
+  },
+  {
+    day: 7,
+    title: "First warm signals",
+    goal: "Identify who has noticed you. These are your first DM targets.",
+    tasks: [
+      { tag: "setup", text: "Review who has visited your profile this week", note: "Anyone who viewed your profile after you commented on their post is warm. Note their name." },
+      { tag: "setup", text: "List the 10 most engaged people from your connections this week", note: "Anyone who replied to your comment, liked your post, or accepted your request. These go to the top of your DM list." },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 4", note: "" },
+    ]
+  },
+  {
+    day: 8,
+    title: "First DMs go out",
+    goal: "Start 5 real conversations. No pitch in the first message.",
+    tasks: [
+      { tag: "outreach", text: "Send your first 5 warm DMs to people who engaged with you", note: "Message: Hey [Name], I have been following your work at [Agency]. Really liked what you posted about [thing]. Quick question — is LinkedIn actually bringing you inbound right now, or is it more just presence building?" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 5", note: "" },
+      { tag: "outreach", text: "Add 10 more prospects to your list", note: "Target total: 50 by end of day 8." },
+    ]
+  },
+  {
+    day: 9,
+    title: "DMs and follow-ups",
+    goal: "Keep conversations moving. Reply to everyone who responded yesterday.",
+    tasks: [
+      { tag: "outreach", text: "Reply to any DM responses from yesterday", note: "If they confirmed the pain, move to the pitch message. If they said yes to a call, book it immediately." },
+      { tag: "outreach", text: "Send 5 more warm DMs", note: "Work through your engaged list. Anyone who liked your post or commented is fair game." },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 6", note: "" },
+    ]
+  },
+  {
+    day: 10,
+    title: "Push for calls",
+    goal: "Convert DM conversations into booked calls.",
+    tasks: [
+      { tag: "outreach", text: "For every prospect who confirmed the pain, send the call pitch", note: "Message: Yeah that is exactly the pattern I keep seeing. I am taking 2 beta clients this month at a reduced rate. Would a 30 minute call be worth it to see if it is a fit?" },
+      { tag: "outreach", text: "Send 5 new DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 7", note: "" },
+      { tag: "content", text: "Write posts 8 to 12 in a batch sitting", note: "This is your week 3 content bank. Do it today so week 3 runs on autopilot." },
+    ]
+  },
+  {
+    day: 11,
+    title: "First call target",
+    goal: "Run your first discovery call if booked. Otherwise push harder.",
+    tasks: [
+      { tag: "close", text: "Run discovery call if booked", note: "Ask: what does your pipeline look like? Where do clients come from? What have you tried on LinkedIn? What would consistent inbound mean for you? Listen more than you talk." },
+      { tag: "outreach", text: "Send 5 new DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 8", note: "" },
+    ]
+  },
+  {
+    day: 12,
+    title: "Proposal day",
+    goal: "Send a proposal within 24 hours of any call you ran.",
+    tasks: [
+      { tag: "close", text: "Send beta proposal to anyone you called yesterday", note: "Short, clear, no fluff. What you discussed, what you will do, $500 beta price, 3 month minimum, testimonial clause." },
+      { tag: "outreach", text: "Send 5 new DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 9", note: "" },
+      { tag: "outreach", text: "Add 10 more prospects to your list", note: "You should have 60 people in your list by now." },
+    ]
+  },
+  {
+    day: 13,
+    title: "Follow up and push",
+    goal: "No response is not a no. Follow up once.",
+    tasks: [
+      { tag: "close", text: "Follow up on any proposals with no reply", note: "One message: Just checking if you had any questions on the proposal." },
+      { tag: "outreach", text: "Send 5 new DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 10", note: "" },
+    ]
+  },
+  {
+    day: 14,
+    title: "Two weeks in — review",
+    goal: "Take stock of where you are. Adjust if needed.",
+    tasks: [
+      { tag: "setup", text: "Review your LinkedIn analytics for the past 2 weeks", note: "Screenshot impressions, profile views, follower growth. Is it moving?" },
+      { tag: "setup", text: "Count your DM conversations, calls booked, proposals sent", note: "If you have sent fewer than 30 DMs by now, double the pace next week." },
+      { tag: "outreach", text: "Send 5 new DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 11", note: "" },
+      { tag: "content", text: "Write posts 13 to 17 in a batch sitting", note: "Week 3 and 4 content bank. Keep the pipeline full." },
+    ]
+  },
+  {
+    day: 15,
+    title: "Scale outreach",
+    goal: "More conversations = more chances to close.",
+    tasks: [
+      { tag: "outreach", text: "Send 10 DMs today instead of 5", note: "You have two weeks of content warming people up. More people are ready to talk now." },
+      { tag: "outreach", text: "Add 10 more prospects to your list", note: "Target total: 80 by end of day 15." },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 12", note: "" },
+    ]
+  },
+  {
+    day: 16,
+    title: "Calls and conversations",
+    goal: "Push for 2 to 3 calls this week.",
+    tasks: [
+      { tag: "close", text: "Run any discovery calls booked", note: "Same framework. Listen. Find the pain. Qualify. Then pitch the call." },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 13", note: "" },
+    ]
+  },
+  {
+    day: 17,
+    title: "Proposals and urgency",
+    goal: "Start creating a sense of urgency around the beta spots.",
+    tasks: [
+      { tag: "close", text: "Send proposals to anyone called this week", note: "" },
+      { tag: "close", text: "Add urgency to warm leads who have not replied", note: "Message: I am closing the 2 beta spots this week and wanted to give you first right of refusal before I open it up." },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 14", note: "" },
+    ]
+  },
+  {
+    day: 18,
+    title: "Build in public post",
+    goal: "Post about launching SIGNL Media. This is your best lead generator.",
+    tasks: [
+      { tag: "content", text: "Write and publish your build in public post", note: "Something like: I launched SIGNL Media 18 days ago. Here is what I have learned so far. Share real numbers, real struggles, what is working. This kind of post attracts inbound." },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "outreach", text: "Add 10 more prospects to your list", note: "Target total: 90 by end of day 18." },
+    ]
+  },
+  {
+    day: 19,
+    title: "Follow up everything",
+    goal: "Work every open conversation this week.",
+    tasks: [
+      { tag: "close", text: "Review every open proposal and DM conversation", note: "Anyone who went quiet in the last 5 days gets one more message today." },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 15", note: "" },
+    ]
+  },
+  {
+    day: 20,
+    title: "Three weeks in — push hard",
+    goal: "You need calls and closes this week. No letting up.",
+    tasks: [
+      { tag: "close", text: "Run any pending discovery calls", note: "" },
+      { tag: "close", text: "Send any pending proposals", note: "" },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 16", note: "" },
+      { tag: "content", text: "Write posts 18 to 20 — final week content bank", note: "" },
+    ]
+  },
+  {
+    day: 21,
+    title: "Contract and payment ready",
+    goal: "When someone says yes, you need to be ready in 10 minutes.",
+    tasks: [
+      { tag: "setup", text: "Have your one-page contract ready to send", note: "Scope, price, payment terms, testimonial clause. If it is not ready yet, write it today." },
+      { tag: "setup", text: "Set up your payment link on Wise or Payoneer", note: "You need to be able to send a payment link within minutes of a yes." },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 17", note: "" },
+    ]
+  },
+  {
+    day: 22,
+    title: "Final push on open proposals",
+    goal: "Any proposal older than 7 days needs a decision today.",
+    tasks: [
+      { tag: "close", text: "Final follow up on all proposals older than 7 days", note: "Message: I want to make sure I have the right people in the beta before I close the spots. Are you still interested?" },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 18", note: "" },
+      { tag: "outreach", text: "Add final 10 prospects to complete your list of 100", note: "100 prospects in 30 days is your target." },
+    ]
+  },
+  {
+    day: 23,
+    title: "Close client 1",
+    goal: "Get the contract signed and first payment collected.",
+    tasks: [
+      { tag: "close", text: "Get contract signed for client 1", note: "Send the PDF. Follow up same day if no reply. Do not start work without a signed agreement." },
+      { tag: "close", text: "Collect first month payment upfront", note: "$500. No exceptions. If they will not pay upfront at $500 they will not pay at $800 either." },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 19", note: "" },
+    ]
+  },
+  {
+    day: 24,
+    title: "Onboard client 1",
+    goal: "First impressions matter. Make day one feel professional.",
+    tasks: [
+      { tag: "setup", text: "Run onboarding call with client 1", note: "Voice, tone, audience, goals, content they have liked before, competitors they respect. Fill your questionnaire." },
+      { tag: "setup", text: "Screenshot client 1 baseline metrics", note: "Followers, impressions, profile views. This is your before. You need it for the case study." },
+      { tag: "setup", text: "Build client 1 first 30-day content calendar", note: "5 posts per week, mix of educational, storytelling and opinion." },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+      { tag: "content", text: "Publish post 20", note: "" },
+    ]
+  },
+  {
+    day: 25,
+    title: "Push for client 2",
+    goal: "One client is a start. Two is a business.",
+    tasks: [
+      { tag: "close", text: "Identify your single strongest remaining prospect", note: "Who has replied to your DMs, engaged with your content, or been on a call? Go after them today." },
+      { tag: "close", text: "Send a direct closing message to top remaining prospects", note: "Be honest: I just signed my first beta client and I have one spot left. Are you still open to a conversation?" },
+      { tag: "outreach", text: "Send 10 DMs", note: "" },
+      { tag: "daily", text: "Send 20 connection requests", note: "" },
+      { tag: "daily", text: "Comment on 10 posts", note: "" },
+    ]
+  },
+  {
+    day: 26,
+    title: "Deliver for client 1",
+    goal: "Results start now. Every day of delivery builds your case study.",
+    tasks: [
+      { tag: "setup", text: "Write and schedule first week of posts for client 1", note: "Get them approved before posting. Set up a simple approval process via WhatsApp or email." },
+      { tag: "daily", text: "Do 15 comments per day on client 1 target accounts", note: "This is part of their service. Do not skip it." },
+      { tag: "close", text: "Book a call with your top remaining prospect", note: "" },
+      { tag: "daily", text: "Send 20 connection requests for your own profile", note: "" },
+      { tag: "daily", text: "Comment on 10 posts for your own profile", note: "" },
+    ]
+  },
+  {
+    day: 27,
+    title: "Close client 2",
+    goal: "Get the second signature and second payment.",
+    tasks: [
+      { tag: "close", text: "Run discovery call with prospect 2", note: "" },
+      { tag: "close", text: "Send proposal to prospect 2 within 24 hours", note: "" },
+      { tag: "close", text: "Get contract signed and payment collected", note: "Same process as client 1. No start without payment." },
+      { tag: "daily", text: "Deliver day 2 of client 1 content and engagement", note: "" },
+      { tag: "daily", text: "Comment on 10 posts for your own profile", note: "" },
+    ]
+  },
+  {
+    day: 28,
+    title: "Onboard client 2",
+    goal: "Same quality onboarding as client 1.",
+    tasks: [
+      { tag: "setup", text: "Run onboarding call with client 2", note: "" },
+      { tag: "setup", text: "Screenshot client 2 baseline metrics", note: "" },
+      { tag: "setup", text: "Build client 2 first 30-day content calendar", note: "" },
+      { tag: "daily", text: "Deliver client 1 content and engagement day 3", note: "" },
+      { tag: "content", text: "Post on your own LinkedIn — you just signed two beta clients", note: "This is a build in public moment. Share the milestone. It will attract more inbound." },
+    ]
+  },
+  {
+    day: 29,
+    title: "Document your system",
+    goal: "Write down your process so it is repeatable.",
+    tasks: [
+      { tag: "setup", text: "Write your client delivery checklist", note: "What you do every day for each client. Posts, comments, connections, DMs, reporting. This becomes your operating manual." },
+      { tag: "setup", text: "Create a weekly report template", note: "Impressions, profile views, new connections, inbound DMs. Keep it one page. Send every Monday." },
+      { tag: "daily", text: "Deliver for both clients", note: "" },
+      { tag: "daily", text: "Comment on 10 posts for your own profile", note: "" },
+    ]
+  },
+  {
+    day: 30,
+    title: "Day 30 — Two clients closed",
+    goal: "Review, celebrate, and plan the next 30 days.",
+    tasks: [
+      { tag: "setup", text: "Screenshot your own LinkedIn analytics for the past 30 days", note: "Compare to your baseline from day 1. This is your personal case study." },
+      { tag: "setup", text: "Write a 30-day recap post on LinkedIn", note: "Numbers, lessons, what is next. This will be your best performing post yet." },
+      { tag: "close", text: "Confirm both clients are onboarded and first content is live", note: "" },
+      { tag: "setup", text: "Plan next 30 days — target 4 clients at $800 each", note: "Two beta clients are proof. Now raise the price and go again." },
+      { tag: "daily", text: "Deliver for both clients", note: "" },
+    ]
+  },
+];
+
+const TAGS = { setup: 'Setup', daily: 'Daily', outreach: 'Outreach', content: 'Content', close: 'Close' };
+const TAG_CLASSES = { setup: 'tag-setup', daily: 'tag-daily', outreach: 'tag-outreach', content: 'tag-content', close: 'tag-close' };
+
+let state = JSON.parse(localStorage.getItem('signl-plan') || '{}');
+let prospects = JSON.parse(localStorage.getItem('signl-prospects') || '[]');
+
+function saveState() { localStorage.setItem('signl-plan', JSON.stringify(state)); }
+function saveProspects() { localStorage.setItem('signl-prospects', JSON.stringify(prospects)); }
+
+function toggleTask(dayIdx, taskIdx) {
+  const key = `${dayIdx}-${taskIdx}`;
+  state[key] = !state[key];
+  saveState();
+  renderAll();
+}
+
+function addProspect() {
+  const name = document.getElementById('p-name').value.trim();
+  const company = document.getElementById('p-company').value.trim();
+  const status = document.getElementById('p-status').value;
+  if (!name) return;
+  prospects.push({ id: Date.now(), name, company, status });
+  document.getElementById('p-name').value = '';
+  document.getElementById('p-company').value = '';
+  saveProspects();
+  renderProspects();
+  updateStats();
+}
+
+function updateProspectStatus(id, val) {
+  const p = prospects.find(p => p.id === id);
+  if (p) { p.status = val; saveProspects(); renderProspects(); updateStats(); }
+}
+
+function deleteProspect(id) {
+  prospects = prospects.filter(p => p.id !== id);
+  saveProspects();
+  renderProspects();
+  updateStats();
+}
+
+const STATUS_LABELS = { connected: 'Connected', replied: 'Replied', call: 'Call booked', proposal: 'Proposal sent', closed: 'Closed' };
+const STATUS_CLASSES = { connected: 'ps-connected', replied: 'ps-replied', call: 'ps-call', proposal: 'ps-proposal', closed: 'ps-closed' };
+
+function renderProspects() {
+  const list = document.getElementById('prospect-list');
+  if (!list) return;
+  if (prospects.length === 0) {
+    list.innerHTML = '<div class="prospect-empty">No prospects yet. Add your first one above.</div>';
+  } else {
+    list.innerHTML = prospects.map(p => `
+      <div class="prospect-row">
+        <div class="prospect-name">${p.name}</div>
+        <div class="prospect-company">${p.company || ''}</div>
+        <select class="prospect-status-sel" onchange="updateProspectStatus(${p.id}, this.value)">
+          ${Object.entries(STATUS_LABELS).map(([v,l]) => `<option value="${v}" ${p.status===v?'selected':''}>${l}</option>`).join('')}
+        </select>
+        <button class="prospect-del" onclick="deleteProspect(${p.id})">Remove</button>
+      </div>
+    `).join('');
+  }
+  document.getElementById('prospect-count').textContent = prospects.length + ' prospects';
+}
+
+function updateStats() {
+  let done = 0, total = 0;
+  DAYS.forEach((d, di) => {
+    d.tasks.forEach((t, ti) => {
+      total++;
+      if (state[`${di}-${ti}`]) done++;
+    });
+  });
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('nav-done').textContent = done;
+  document.getElementById('nav-total').textContent = total;
+  document.getElementById('h-done').textContent = done;
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('h-prospects').textContent = prospects.length;
+  document.getElementById('h-closed').textContent = prospects.filter(p => p.status === 'closed').length;
+
+  // Update sidebar day checks
+  DAYS.forEach((d, di) => {
+    const allDone = d.tasks.every((t, ti) => state[`${di}-${ti}`]);
+    const check = document.getElementById(`check-${di}`);
+    const link = document.getElementById(`link-${di}`);
+    if (check) check.className = 'day-check' + (allDone ? ' done' : '');
+    if (link) link.className = 'day-link' + (allDone ? ' complete' : '');
+  });
+}
+
+function renderAll() {
+  updateStats();
+}
+
+function buildSidebar() {
+  const container = document.getElementById('sidebar-links');
+  let html = '';
+  const weeks = [[0,6],[7,13],[14,20],[21,29]];
+  const weekLabels = ['Week 2 — Outreach', 'Week 3 — Calls', 'Week 4 — Close'];
+  let weekIdx = 0;
+  DAYS.forEach((d, di) => {
+    if (di === 7 || di === 14 || di === 21) {
+      html += `<div class="sidebar-week-label">${weekLabels[weekIdx]}</div>`;
+      weekIdx++;
+    }
+    html += `<div class="day-link" id="link-${di}" onclick="scrollToDay(${di})">
+      <span>Day ${d.day} — ${d.title.split(' ').slice(0,2).join(' ')}</span>
+      <div class="day-check" id="check-${di}"></div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function scrollToDay(di) {
+  const el = document.getElementById(`day-${di}`);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildContent() {
+  const container = document.getElementById('content');
+  let html = '';
+  DAYS.forEach((d, di) => {
+    const isProspectDay = [1, 3, 7, 11, 15, 21].includes(di);
+    const isRecurringDay = di === 2;
+
+    html += `<div class="day-section" id="day-${di}">
+      <div class="day-header">
+        <span class="day-num">Day ${d.day}</span>
+      </div>
+      <div class="day-title">${d.title}</div>
+      <div class="day-goal">${d.goal}</div>
+      <div class="tasks">`;
+
+    d.tasks.forEach((t, ti) => {
+      const done = state[`${di}-${ti}`] ? ' done' : '';
+      html += `<div class="task${done}" onclick="toggleTask(${di},${ti})">
+        <div class="task-cb"></div>
+        <div class="task-body">
+          <div class="task-tag ${TAG_CLASSES[t.tag]}">${TAGS[t.tag]}</div>
+          <div class="task-text">${t.text}</div>
+          ${t.note ? `<div class="task-note">${t.note}</div>` : ''}
+        </div>
+      </div>`;
+    });
+
+    html += '</div>';
+
+    if (isRecurringDay) {
+      html += `<div class="recurring-box">
+        <div class="recurring-header">Daily recurring targets — every single day</div>
+        <div class="recurring-grid">
+          <div class="recurring-item"><div class="recurring-num">20</div><div class="recurring-label">Connection requests</div></div>
+          <div class="recurring-item"><div class="recurring-num">10</div><div class="recurring-label">Comments on posts</div></div>
+          <div class="recurring-item"><div class="recurring-num">1</div><div class="recurring-label">Post published (5x/week)</div></div>
+          <div class="recurring-item"><div class="recurring-num">5</div><div class="recurring-label">DMs sent (from day 8)</div></div>
+          <div class="recurring-item"><div class="recurring-num">100%</div><div class="recurring-label">Reply to your comments</div></div>
+          <div class="recurring-item"><div class="recurring-num">1</div><div class="recurring-label">Screenshot analytics</div></div>
+        </div>
+      </div>`;
+    }
+
+    if (isProspectDay) {
+      html += `<div class="prospect-section">
+        <div class="prospect-header">
+          <span class="prospect-title">Prospect tracker</span>
+          <span class="prospect-count" id="prospect-count">0 prospects</span>
+        </div>
+        <div class="prospect-add">
+          <input class="prospect-input" id="p-name" placeholder="Name" style="max-width:160px">
+          <input class="prospect-input" id="p-company" placeholder="Agency" style="max-width:160px">
+          <select class="prospect-select" id="p-status">
+            <option value="connected">Connected</option>
+            <option value="replied">Replied</option>
+            <option value="call">Call booked</option>
+            <option value="proposal">Proposal sent</option>
+            <option value="closed">Closed</option>
+          </select>
+          <button class="prospect-btn" onclick="addProspect()">Add</button>
+        </div>
+        <div class="prospect-list" id="prospect-list"></div>
+      </div>`;
+    }
+
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+  renderProspects();
+}
+
+buildSidebar();
+buildContent();
+updateStats();
+</script>
+</body>
+</html>
